@@ -1,6 +1,6 @@
-import { Link } from "react-router";
 import { AdCardProps } from "./AdCard"; 
 import AdCard from "./AdCard"
+import { useState } from "react";
 
 const RecentAds = () => {
     const ads: AdCardProps[] = [
@@ -49,19 +49,25 @@ const RecentAds = () => {
 
     ]
  
+    const [total, setTotal] = useState(0);
     return (
         <>
         <h2>Annonces récentes</h2>
+        <h3>{total}</h3>
         <section className="recent-ads">
             {ads.map((ad) => (
-            <Link key={ad.id} to={`/ad/${ad.id}`} state={{ ad }}>
-                <AdCard
-                link={ad.link}
-                imgUrl={ad.imgUrl}
-                title={ad.title}
-                price={ad.price}
-            />
-            </Link>
+                <div key={ad.id}>
+                    <AdCard
+                    link={ad.link}
+                    imgUrl={ad.imgUrl}
+                    title={ad.title}
+                    price={ad.price}
+                />
+                <button className='button' onClick = {() => {
+                    setTotal(total + ad.price);
+                }}>
+                    Add price to total </button>
+                </div>
             ))}
         </section>
         </>
