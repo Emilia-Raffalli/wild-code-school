@@ -1,6 +1,6 @@
 import { AdCardProps } from "./AdCard"; 
 import AdCard from "./AdCard"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const RecentAds = () => {
     const ads: AdCardProps[] = [
@@ -49,7 +49,21 @@ const RecentAds = () => {
 
     ]
  
+    // const [total, setTotal] = useState(0);
     const [total, setTotal] = useState(0);
+    const everyRender = () => {
+        console.log('This will be executed after every render.');
+    }
+    everyRender();
+
+    const firstRenderOnly = () => {
+        console.log('Hello first Render Only !');
+    }
+
+    useEffect(() => {
+        firstRenderOnly();
+    }, []); 
+
     return (
         <>
         <h2>Annonces récentes</h2>
