@@ -4,11 +4,13 @@ import dataSource from "./config/db";
 import { Ad } from "./entities/Ad"; 
 import { Category } from './entities/Category';
 import { Tag } from './entities/Tag';
+import cors from "cors";
 
 
 const port =3000;
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 //Request Handler

@@ -1,6 +1,7 @@
 import { AdCardProps } from "./AdCard"; 
 import AdCard from "./AdCard"
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 const RecentAds = () => {
     const ads: AdCardProps[] = [
@@ -60,8 +61,18 @@ const RecentAds = () => {
         console.log('Hello first Render Only !');
     }
 
+    const fetchData = async () => {
+        try {
+            const result = await axios.get('http://localhost:3000/ads');
+            console.log(result);
+        }catch (error) {
+         console.log('error', error);   
+        }
+    }
+
     useEffect(() => {
         firstRenderOnly();
+        fetchData();
     }, []); 
 
     return (
