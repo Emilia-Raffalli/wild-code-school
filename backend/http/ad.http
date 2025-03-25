@@ -1,0 +1,32 @@
+GET http://localhost:3000/ads
+
+###
+
+POST http://localhost:3000/ads
+Content-Type: application/json
+
+{
+    "title": "Nouvel objet yyygoy",
+    "description": "Lit évolutif en bois, bon état, avec matelas.",
+    "author": "Amandine Charpentier",
+    "price": 100,
+    "createdAt": "2023-08-10 11:10:00",
+    "image": "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
+    "city": "Lyon",
+    "categoryId": 1,
+    "tags": [{"id":1} , {"id":2}]
+}
+
+
+###
+DELETE http://localhost:3000/ads/3
+
+###
+PUT http://localhost:3000/ads/5
+Content-Type: application/json
+
+{
+    "title": "Titre de l'objet mis à jour"
+}
+
+

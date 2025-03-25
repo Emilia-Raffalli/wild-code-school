@@ -1,9 +1,10 @@
+import 'reflect-metadata';
 import express from "express"
-import sqlite3 from "sqlite3";
 import dataSource from "./config/db";
+import { Ad } from "./entities/Ad"; 
+import { Category } from './entities/Category';
+import { Tag } from './entities/Tag';
 
-
-const db = new sqlite3.Database('good_corner.sqlite');
 
 const port =3000;
 const app = express();
@@ -12,96 +13,131 @@ app.use(express.json());
 
 //Request Handler
 //req : requete, res : response (le _req pour dire à typescript que l'on sait que l'on doit préciser le request)
-app.get("/ads", (_req, res) => {
-    db.all("SELECT * FROM ads", (err, rows) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send("An error occurred"); 
-      }
-      res.send(rows); 
-    });
-  });
-  
-
-// app.get("/ads", (_req, res) => {
-//     res.send(ads);
-// });
-
-// app.post("/ads", (req, res) => {
-//     console.log(req.body);
-//     ads.push(req.body);
-//     res.send('données envoyées');
-// });
-
-app.post('/ads', (req, res) => {
-    const stmt = db.prepare(
-        'INSERT INTO ads (title, description, author, price, createdAt, image, city) VALUES (?,?,?,?,?,?,?)'
-    );
-    stmt.run([
-        req.body.title,
-        req.body.description,
-        req.body.author,
-        req.body.price,
-        req.body.createdAt,
-        req.body.image,
-        req.body.city
-    ], (err) => {
-        if (err) {
-          res.status(500).send(err)
-        } else {
-          res.send('Ad has been created')
-        }
-      })
-    });
+app.get("/ads", async (_req, res) => {
+  try {
+      const allAds = await Ad.find();  
+      console.log(allAds);
+      res.json(allAds); 
+  } catch (error) {
+      console.error("❌ Erreur lors de la récupération des annonces:", error);
+      res.status(500).json({ error: "Erreur de récupération des annonces" });
+  }
+});
 
 
+app.get("/categories", async (_req, res) => {
+  try {
+      const categories = await Category.find();  
+      console.log(categories);  
+      res.json(categories);  
+  } catch (error) {
+      console.error("❌ Erreur lors de la récupération des categories:", error);
+      res.status(500).json({ error: "Erreur de récupération des categories" });
+  }
+});
 
-//:id les deux points indiquent que c'est un paramètre de route
-app.delete("/ads/:id", (req, res) => {
-    const id = req.params.id;
-    const stmt = db.prepare('DELETE FROM ads WHERE id = ?');
 
-    stmt.run([id],(err) => {
-        if (err) {
-          res.status(500).send(err)
-        } else {
-          return res.send(`Ad n°${id} has been deleted`)
-        }
-      });
+app.get("/tags", async (req, res) => {
+  const tags = await Tag.find();
+  console.log(tags);
+  res.json(tags);
+})
+
+
+app.post("/ads", async (req, res) => {
+  const { title, description, author, price, createdAt, image, city, categoryId, tags } = req.body;  
+   
+  try {
+      const ad = new Ad();
+      ad.title = title;
+      ad.description = description;
+      ad.author = author;
+      ad.price = price;  
+      ad.createdAt = createdAt;  
+      ad.image = image; 
+      ad.city = city; 
+      ad.category = categoryId;
+      ad.tags = tags
+
+      console.log(categoryId);
+
+      await ad.save(); 
+      res.status(201).send('ad has been created !');
+
+    } catch (error) {
+      console.error("❌ Erreur lors de la création de l'annonce:", error);
+      res.status(500).json({ error: "Erreur de création de l'annonce" });
+  }
 });
 
 
 
-app.put("/ads/:id", (req, res) => {
-    const id = req.params.id;
-    const stmt = db.prepare(
-        `UPDATE ads SET
-        title = ?, 
-        description=?, 
-        author=?, 
-        price=?,
-        createdAt=?,
-        image=?, 
-        city=? 
-        WHERE id = ?` 
-    );
-        stmt.run([
-            req.body.title,
-            req.body.description,
-            req.body.author,
-            req.body.price,
-            req.body.createdAt,
-            req.body.image,
-            req.body.city,
-            id
-        ], (err) => {
-            if (err) {
-              res.status(500).send(err)
-            } else {
-              res.send('Ad has been updated')
-            }
-          })
-     });
+
+app.post("/categories", async (req, res) => {
+  const categoriesData = req.body;
+
+  try {
+    categoriesData.map((categoryData:Category) => {
+      if (!categoryData.categoryName) {
+        throw new Error("Each category must have a categoryName");
+      }
+      console.log(`Creating category: ${categoryData.categoryName}`);
+  
+      const category = new Category();
+      category.categoryName = categoryData.categoryName;
+  
+      category.save();
+    });
+    res.send('categories créées avec succès.')
+  
+  } catch (error){
+    res.status(500).send(error);
+  }
+  
+});
+
+
+app.post("/tags", async (req, res) => {
+  const tag = new Tag();
+
+  tag.tagName = req.body.tagName;
+
+  await tag.save(); 
+      res.status(201).send('tag has been created !');
+})
+
+  
+
+
+
+//:id les deux points indiquent que c'est un paramètre de route
+app.delete("/ads/:id", async (req, res) => {
+    const id = Number.parseInt(req.params.id);
+    try {
+      await Ad.delete({id: id});
+      res.send('Ad has been deleted');
+    }
+    catch (err){
+      console.log("err", err);
+      res.status(500).send(err);
+    }
+  
+});
+
+
+
+app.put("/ads/:id", async (req, res) => {
+    const id = Number.parseInt(req.params.id);
+    try {
+    //fonction update native permettant de modifier partiellement l'entité en base. (par exemple dans ma route put, je ne lui passe qu'un titre à la modif.)
+    await Ad.update({id:id}, req.body);
+    res.send("Ad has been updated !");
+    } catch (error) {
+      console.log("error", error);
+      res.status(500).send(error);
+    }
+});
+
 
 
 
@@ -132,8 +168,15 @@ app.put("/ads/:id", (req, res) => {
 // });
 
 
-app.listen(port, async () => { //démarre Express sur le port défini (ici 3000)
-    console.log(`Example app listening on port ${port}`);
-    await dataSource.initialize(); // à la lecture du port, initialise la base de données
-})
+app.listen(port, async () => { 
+  console.log(`Example app listening on port ${port}`);
+
+  try {
+    await dataSource.initialize();
+    console.log("Database connected successfully!");
+} catch (error) {
+    console.error("Database connection failed:", error);
+}
+});
+
 
