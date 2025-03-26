@@ -53,14 +53,10 @@ const NewAdForm = () => {
     };
 
 
-
     useEffect(() => {
         fetchCategories();
         // console.log(categories);
     }, []);
-
-
-
 
 
     return (
@@ -70,8 +66,7 @@ const NewAdForm = () => {
 
                 <label> 
                     Titre de l'annonce
-                    <input type='text' className="text-field" name="title" placeholder="Titre de l'annonce"
-                    >
+                    <input type='text' className="text-field" name="title" placeholder="Titre de l'annonce">
                     </input>
                 </label>
 
