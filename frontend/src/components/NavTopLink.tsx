@@ -1,11 +1,12 @@
 export type NavTopLinkProps = {
-    link: string;
-    title: string;
+    id?: number;
+    link?: string;
+    categoryName: string;
 }
 
-const NavTopLink = ({ link, title }: NavTopLinkProps) => {
+const NavTopLink = ({ link, categoryName }: NavTopLinkProps) => {
     return (
-        <a href={link} className="category-navigation-link">{title} • </a>
+        <a href={link} className="category-navigation-link">{categoryName} • </a>
     );
 }
 

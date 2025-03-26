@@ -4,6 +4,7 @@ import Layout from './pages/Layout';
 import RecentAds from './components/RecentAds';
 import AboutPage from './pages/AboutPage';
 import AdDetailsPage from './pages/AdDetailsPage';
+import NewAdForm from './pages/NewAdForm';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route index element={<RecentAds />} />
         <Route path="about" element = {<AboutPage/>} />
         <Route path="ad/:id" element = {<AdDetailsPage />} />
+        <Route path="ad/new" element = {<NewAdForm />} />
       </Route>
     </Routes>
   );
