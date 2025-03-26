@@ -22,13 +22,14 @@ const NewAdForm = () => {
         const dataFromJson = {
             title: formJson.title,
             description: formJson.description,
-            author: formJson.author,
+            author: `${formJson.authorFirstname} ${formJson.authorLastname}`,
             price: formJson.price,
             city: formJson.city,
             categoryId: formJson.category, 
         };
 
-        if (!dataFromJson.title || !dataFromJson.description || !dataFromJson.price || !dataFromJson.city || !dataFromJson.categoryId) {
+        if (!dataFromJson.title || !dataFromJson.description || !dataFromJson.price || 
+            !dataFromJson.city || !dataFromJson.categoryId || !formJson.authorFirstname || !formJson.authorLastname) {
             console.error('Erreur: Tous les champs doivent être remplis.');
             return;
         }
@@ -66,8 +67,8 @@ const NewAdForm = () => {
 
                 <label> 
                     Titre de l'annonce
-                    <input type='text' className="text-field" name="title" placeholder="Titre de l'annonce">
-                    </input>
+                    <input type="text" className="text-field" name="title" placeholder="Titre de l'annonce"
+                    defaultValue={'Vend chaussures de running'} />
                 </label>
 
                 <label> 
@@ -83,26 +84,24 @@ const NewAdForm = () => {
 
                 <label>
                     Decsription
-                    <textarea name="description" className="text-field" rows={4} cols={40} />
+                    <textarea name="description" className="text-field" rows={4} cols={40} defaultValue={'Chaussures de running en bon état, jamais servies.'}/>
                 </label>
                 <label> 
-                    Entrez votre prénom et nom
-                    <input type='text' className="text-field" name="author" >
-                    </input>
+                    Votre prénom
+                    <input type='text' className="text-field" name="authorFirstname" defaultValue={'John'} />
+                </label>
+                <label> 
+                    Votre nom
+                    <input type='text' className="text-field" name="authorLastname" defaultValue={'Doe'} />
                 </label>
                 <label> Prix
-                    <input type='text' className="text-field" name="price" >
-                    </input>
+                    <input type='text' className="text-field" name="price" defaultValue={35} />
                 </label>
 
                 <label> 
                     Ville
-                    <input type='text' className="text-field" name="city" >
-                    </input>
+                    <input type='text' className="text-field" name="city" defaultValue={'Paris'} />
                 </label>
-
-
-
 
                 <button className="button">Soumettre</button>
 
