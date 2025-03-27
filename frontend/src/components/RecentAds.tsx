@@ -50,7 +50,7 @@ const RecentAds = () => {
             {ads.map((ad) => (
                 <div key={ad.id}>
                     <AdCard
-                    link={ad.link}
+                    link={`/ad/${ad.id}`}
                     image={ad.image}
                     title={ad.title}
                     price={ad.price}

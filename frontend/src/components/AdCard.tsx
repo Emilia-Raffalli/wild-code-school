@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 export type AdCardProps = {
     id?: number;
     link: string;

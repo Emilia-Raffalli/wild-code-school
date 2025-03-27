@@ -20,6 +20,9 @@ app.get("/ads", async (req, res) => {
   const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : null;
   console.log(categoryId);
 
+  const adId = req.query.adId?parseInt(req.query.adId as string) : null;
+  console.log(adId);
+
   try {
     let ads;
 
@@ -33,6 +36,11 @@ app.get("/ads", async (req, res) => {
           category: true 
         }, 
       });
+    } else if (adId) {
+      ads = await Ad.findOneBy({
+        id: adId,
+    })
+
     } else {
       ads = await Ad.find();  
     } 
