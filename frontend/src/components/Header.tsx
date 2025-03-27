@@ -1,8 +1,6 @@
 import NavTop from "./NavTop"
 
 const Header = () => {
-    // console.log("Hello World");
-    // const name = "John Doe";
 
     return (
         <header className="header">
@@ -36,7 +34,7 @@ const Header = () => {
             <span className="desktop-long-label">Publier une annonce</span>
           </a>
         </div>
-        <NavTop></NavTop>
+        <NavTop />
 
   
         

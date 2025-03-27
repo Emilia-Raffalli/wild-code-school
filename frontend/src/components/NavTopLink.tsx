@@ -1,12 +1,12 @@
-export type NavTopLinkProps = {
-    id?: number;
-    link?: string;
-    categoryName: string;
-}
+import { Link } from "react-router";
+import { Category } from "../types/Category";
+    
 
-const NavTopLink = ({ link, categoryName }: NavTopLinkProps) => {
+const NavTopLink = ({ link, categoryName }: Category) => {
     return (
-        <a href={link} className="category-navigation-link">{categoryName} • </a>
+        <Link to={link} className="category-navigation-link">
+          {categoryName} •
+        </Link>
     );
 }
 

@@ -1,0 +1,43 @@
+form#newAdForm {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#newAdForm label {
+    display: block;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+#newAdForm .text-field {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#newAdForm textarea.text-field {
+    resize: vertical;
+    height: 100px;
+}
+
+#newAdForm button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    color: white;
+    background-color: black;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+

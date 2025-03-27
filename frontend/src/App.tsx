@@ -11,6 +11,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<RecentAds />} />
+        {/* <Route path="/ads" element={<RecentAds />} />  */}
+        <Route path="/ads" element={<RecentAds />} />
         <Route path="about" element = {<AboutPage/>} />
         <Route path="ad/:id" element = {<AdDetailsPage />} />
         <Route path="ad/new" element = {<NewAdForm />} />

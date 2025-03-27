@@ -2,57 +2,17 @@ import { AdCardProps } from "./AdCard";
 import AdCard from "./AdCard"
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useSearchParams } from "react-router";
+// import { useSearchParams } from "react-router";
 
 const RecentAds = () => {
-    // const ads: AdCardProps[] = [
-    // {   
-    //     id:1,
-    //     link:"/images/table.webp",
-    //     imgUrl:"/images/table.webp",
-    //     title:"Table",
-    //     price:120
-    // },
-    // {   
-    //     id:2,
-    //     link:"/ads/dame-jeanne",
-    //     imgUrl:"/images/dame-jeanne.webp",
-    //     title:"Dame-jeanne",
-    //     price:75
-    // },
-    // {   
-    //     id:3,
-    //     link:"/ads/vide-poche",
-    //     imgUrl:"/images/vide-poche.webp",
-    //     title:"Vide-poche",
-    //     price:4
-    // },
-    // {   
-    //     id:4,
-    //     link:"/ads/vaisselier",
-    //     imgUrl:"/images/vaisselier.webp",
-    //     title:"Vaisselier",
-    //     price:900
-    // },
-    // {   
-    //     id:5,
-    //     link:"/ads/bougie",
-    //     imgUrl:"/images/bougie.webp",
-    //     title:"Bougie",
-    //     price:9
-    // },
-    // {   
-    //     id:6,
-    //     link:"/ads/porte-magazine",
-    //     imgUrl:"/images/porte-magazine.webp",
-    //     title:"Porte-magazine",
-    //     price:45
-    // }
 
-    // ]
- 
-    // const [total, setTotal] = useState(0);
     const [total, setTotal] = useState(0);
     const [ads, setAds ] = useState<AdCardProps[]>([]);
+
+    const [searchParams] = useSearchParams();
+    console.log(searchParams.get('categoryId'));
+
     const everyRender = () => {
         console.log('This will be executed after every render.');
     }
@@ -63,12 +23,15 @@ const RecentAds = () => {
     }
 
     const fetchData = async () => {
-        try {
-            const result = await axios.get<AdCardProps[]> // typage des données reçues
-            ('http://localhost:3000/ads');
-            console.log(result);
-            setAds(result.data);
+        let url = `http://localhost:3000/ads`;
+        if(searchParams.get('categoryId')) {
+            url += `?categoryId=${searchParams.get('categoryId')}`
+        }
 
+        try {
+            const result = await axios.get<AdCardProps[]>(url);
+            setAds(result.data); 
+            console.log(result);
         } catch (error) {
          console.log('error', error);   
         }
@@ -77,7 +40,7 @@ const RecentAds = () => {
     useEffect(() => {
         firstRenderOnly();
         fetchData();
-    }, []); 
+    }, [searchParams]); 
 
     return (
         <>

@@ -1,49 +1,30 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import "../styles/NewAdForm.css";
 
 type Category = {
-    id:number;
+    id: number;
     categoryName: string;
-}
+};
 
+type Inputs = {
+    title: string;
+    description: string;
+    authorFirstname: string;
+    authorLastname: string;
+    price: number;
+    category: number;
+    city: string;
+    image: string;
+};
 
 const NewAdForm = () => {
     const [categories, setCategories] = useState<Category[]>([]);
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement> ) => {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form as HTMLFormElement);
-        // Or you can work with it as a plain object:
-        const formJson = Object.fromEntries(formData.entries());
-        console.log(formJson);
+    const { register, handleSubmit } = useForm<Inputs>();
 
-
-        const dataFromJson = {
-            title: formJson.title,
-            description: formJson.description,
-            author: `${formJson.authorFirstname} ${formJson.authorLastname}`,
-            price: formJson.price,
-            city: formJson.city,
-            categoryId: formJson.category, 
-        };
-
-        if (!dataFromJson.title || !dataFromJson.description || !dataFromJson.price || 
-            !dataFromJson.city || !dataFromJson.categoryId || !formJson.authorFirstname || !formJson.authorLastname) {
-            console.error('Erreur: Tous les champs doivent être remplis.');
-            return;
-        }
-
-        try {
-            const response = await axios.post('http://localhost:3000/ads', dataFromJson); // post de la nouvelle annonce
-            console.log(response);
-            console.log('Form data submitted successfully:', response.data);
-        } catch (error) {
-            console.error('Error submitting form data:', error);
-        }
-    };
-
-
+    // Fonction pour récupérer les catégories depuis l'API
     const fetchCategories = async () => {
         try {
             const result = await axios.get<Category[]>("http://localhost:3000/categories");
@@ -53,76 +34,101 @@ const NewAdForm = () => {
         }
     };
 
-
     useEffect(() => {
         fetchCategories();
-        // console.log(categories);
     }, []);
 
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        const formData = {
+            title: data.title,
+            description: data.description,
+            author: `${data.authorFirstname} ${data.authorLastname}`,
+            price: Number(data.price), 
+            city: data.city,
+            categoryId: Number(data.category), 
+        };
+
+        console.log("Données envoyées :", formData);
+
+        console.log(data);
+
+        try {
+            const response = await axios.post("http://localhost:3000/ads", formData);
+            console.log("Annonce soumise avec succès :", response.data);
+            alert("Annonce créée avec succès !");
+        } catch (error) {
+            console.error("Erreur lors de la soumission du formulaire :", error);
+        }
+    };
 
     return (
         <>
-            {/* nota bene: il est possible de mettre l'input directement dans la balise label et ainsi se défaire des attribut for et id du label, car cela lie directement le label et l'input. */}
-            <form onSubmit={handleSubmit}>
-
-                <label> 
+            <form id='newAdForm' onSubmit={handleSubmit(onSubmit)}>
+                <label>
                     Titre de l'annonce
-                    <input type="text" className="text-field" name="title" placeholder="Titre de l'annonce"
-                    defaultValue={'Vend chaussures de running'} />
+                    <input
+                        {...register("title", { required: "Le titre est obligatoire" })}
+                        className="text-field"
+                        defaultValue="Lot de tasses à café"
+                    />
                 </label>
-
-                <label> 
-                    Catgégorie
-                    <select name='category'>
+                <br/>
+                <label>
+                    Catégorie
+                    <select {...register("category", { required: "Veuillez choisir une catégorie" })} className="text-field">
+                        <option value="" >Sélectionnez une catégorie</option>
                         {categories.map((category) => (
                             <option value={category.id} key={category.id}>
                                 {category.categoryName}
                             </option>
                         ))}
-                        </select>
-                    </label>
-
+                    </select>
+                </label>
+                <br/>
                 <label>
-                    Decsription
-                    <textarea name="description" className="text-field" rows={4} cols={40} defaultValue={'Chaussures de running en bon état, jamais servies.'}/>
+                    Description
+                    <textarea className="text-field"
+                        {...register("description", { required: "La description est obligatoire" })}
+                    />
                 </label>
-                <label> 
+                <br/>
+                <label>
                     Votre prénom
-                    <input type='text' className="text-field" name="authorFirstname" defaultValue={'John'} />
+                    <input {...register("authorFirstname", { required: "Le prénom est obligatoire" })}
+                    className="text-field" />
                 </label>
-                <label> 
+                <br/>
+                <label>
                     Votre nom
-                    <input type='text' className="text-field" name="authorLastname" defaultValue={'Doe'} />
+                    <input {...register("authorLastname", { required: "Le nom est obligatoire" })}
+                    className="text-field" />
                 </label>
-                <label> Prix
-                    <input type='text' className="text-field" name="price" defaultValue={35} />
+                <br/>
+                <label>
+                    Prix
+                    <input
+                        type="number"
+                        {...register("price", { required: "Le prix est obligatoire", min: 1 })}
+                        className="text-field"
+                    />
                 </label>
-
-                <label> 
+                <br/>
+                <label>
                     Ville
-                    <input type='text' className="text-field" name="city" defaultValue={'Paris'} />
+                    <input {...register("city", { required: "La ville est obligatoire" })}
+                    className="text-field" />
                 </label>
-
-                <button className="button">Soumettre</button>
-
+                <br/>
+                <label>
+                    Image de l'article à vendre
+                    <input {...register("image", { required: false })}
+                    className="text-field" />
+                </label>
+                <br/>
+                <button type="submit">Soumettre</button>
             </form>
-           
         </>
-
-
-// "title": "Nouvel objet yyygoy",
-// "description": "Lit évolutif en bois, bon état, avec matelas.",
-// "author": "Amandine Charpentier",
-// "price": 100,
-// "createdAt": "2023-08-10 11:10:00",
-// "image": "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
-// "city": "Lyon",
-// "categoryId": 1,
-// "tags": [{"id":1} , {"id":2}]
-
-
-
-    )
-}
+    );
+};
 
 export default NewAdForm;
