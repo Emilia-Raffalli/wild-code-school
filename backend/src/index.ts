@@ -25,8 +25,13 @@ app.get("/ads", async (req, res) => {
 
     if (categoryId) {
       ads = await Ad.find({
-        where: { category: { id: categoryId } },
-        relations: { category: true }, 
+        where: { 
+          category: { id: categoryId 
+          } 
+        },
+        relations: { 
+          category: true 
+        }, 
       });
     } else {
       ads = await Ad.find();  
