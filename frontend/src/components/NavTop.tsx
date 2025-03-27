@@ -22,7 +22,7 @@ const NavTop = () => {
             {categories.map((category) => (
                 <NavTopLink 
                     key={category.id}  
-                    link={`?categoryId=${category.id}`}  
+                    link={`/?categoryId=${category.id}`}  
                     categoryName={category.categoryName} />
             ))}
         </nav>

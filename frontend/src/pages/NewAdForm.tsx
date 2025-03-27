@@ -1,12 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import "../styles/NewAdForm.css";
-
-type Category = {
-    id: number;
-    categoryName: string;
-};
+import "../styles/Form.css";
+import { Category } from "../types/Category";
 
 type Inputs = {
     title: string;

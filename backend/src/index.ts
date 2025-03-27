@@ -93,28 +93,50 @@ app.post("/ads", async (req, res) => {
 
 
 
-app.post("/categories", async (req, res) => {
-  const categoriesData = req.body;
+// app.post("/categories", async (req, res) => {
+//   const categoriesData = req.body;
 
+//   try {
+//     categoriesData.map((categoryData:Category) => {
+//       if (!categoryData.categoryName) {
+//         throw new Error("Each category must have a categoryName");
+//       }
+//       console.log(`Creating category: ${categoryData.categoryName}`);
+  
+//       const category = new Category();
+//       category.categoryName = categoryData.categoryName;
+  
+//       category.save();
+//     });
+//     res.send('categories créées avec succès.')
+  
+//   } catch (error){
+//     res.status(500).send(error);
+//   }
+  
+// });
+
+app.post("/categories", async (req, res) => {
   try {
-    categoriesData.map((categoryData:Category) => {
-      if (!categoryData.categoryName) {
-        throw new Error("Each category must have a categoryName");
-      }
-      console.log(`Creating category: ${categoryData.categoryName}`);
-  
-      const category = new Category();
-      category.categoryName = categoryData.categoryName;
-  
-      category.save();
-    });
-    res.send('categories créées avec succès.')
-  
-  } catch (error){
-    res.status(500).send(error);
+    const { categoryName } = req.body;
+
+    const category = new Category();
+    category.categoryName = categoryName;
+
+    await category.save(); 
+
+    res.status(201).send('catgegory has been created !');
+
+  } catch (err){
+    console.log("err", err);
+    res.status(500).send(err);
   }
-  
+
 });
+
+
+
+
 
 
 app.post("/tags", async (req, res) => {
