@@ -1,6 +1,30 @@
 import NavTop from "./NavTop"
+import { useNavigate } from "react-router";
 
-const Header = () => {
+const Header = ({ }) => {
+
+  const navigate = useNavigate();
+  
+  const onSubmit = (e:React.FormEvent) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form as HTMLFormElement);    
+    const searchTerm = formData.get("searchTerm") as string;
+
+
+    if (searchTerm.trim() !== "") 
+      {
+      navigate(`/search/${encodeURIComponent(searchTerm)}`);
+    }
+    
+  }
+  // const handleSearch = (e:React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value.toLowerCase();
+  //   setSearchTerm(value);
+  //   // onSearch(value); 
+  //   console.log(searchTerm);
+  // };
 
     return (
         <header className="header">
@@ -11,8 +35,18 @@ const Header = () => {
               <span className="desktop-long-label">THE GOOD CORNER</span>
             </a>
           </h1>
-          <form className="text-field-with-button">
-            <input className="text-field main-search-field" type="search" />
+          <form className="text-field-with-button" onSubmit={onSubmit}>
+
+            <input 
+              className="text-field main-search-field" 
+              type="search" 
+              placeholder="Type to search"
+              name='searchTerm'
+              // value={searchTerm}
+              // onChange={handleSearch}
+              />
+            
+            
             <button className="button button-primary">
               <svg
                 aria-hidden="true"

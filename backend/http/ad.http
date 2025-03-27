@@ -2,6 +2,10 @@ GET http://localhost:3000/ads
 
 ###
 
+GET http://localhost:3000/ads/search
+
+###
+
 POST http://localhost:3000/ads
 Content-Type: application/json
 

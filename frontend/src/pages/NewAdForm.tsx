@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import "../styles/Form.css";
 import { Category } from "../types/Category";
 import { Tag } from '../types/Tag';
+import { toast } from "react-toastify";
 
 type Inputs = {
     title: string;
@@ -66,7 +67,7 @@ const NewAdForm = () => {
         try {
             const response = await axios.post("http://localhost:3000/ads", formData);
             console.log("Annonce soumise avec succès :", response.data);
-            alert("Annonce créée avec succès !");
+            toast.success("Annonce créée avec succès !");
         } catch (error) {
             console.error("Erreur lors de la soumission du formulaire :", error);
         }

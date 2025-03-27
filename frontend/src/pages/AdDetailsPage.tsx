@@ -1,9 +1,11 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Ad } from '../types/Ad';
+import { toast } from "react-toastify";
 
 const AdDetailsPage = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
     const[ad, setAd] = useState<Ad>();
     console.log(id);
@@ -75,6 +77,21 @@ const AdDetailsPage = () => {
                     ></path>
                     </svg>
                     Envoyer un email</a> */}
+                    <button onClick={ async () => {
+                        try{
+                            await axios.delete(`http://localhost:3000/ads/${ad.id}`);
+                        navigate('/');
+                        toast.success('Annonce supprimée avec succès')
+
+
+                        } catch (error) {
+                            console.log(error);
+                            toast.error('Problème lors de la suppression de l"annonce.')
+                        }
+                        }}
+                        > X Supprimer l'annonce
+
+                    </button>
                 </div>
             </section>
             </>

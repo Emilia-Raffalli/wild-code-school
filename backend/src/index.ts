@@ -5,6 +5,7 @@ import { Ad } from "./entities/Ad";
 import { Category } from './entities/Category';
 import { Tag } from './entities/Tag';
 import cors from "cors";
+import { Like } from 'typeorm';
 
 
 const port =3000;
@@ -49,6 +50,25 @@ app.get("/ads", async (req, res) => {
   } catch (error) {
       console.error("❌ Erreur lors de la récupération des annonces:", error);
       res.status(500).json({ error: "Erreur de récupération des annonces" });
+  }
+});
+
+
+app.get("/ads/search", async (req, res) => {
+  const searchTerm = req.query.searchTerm as string; 
+  console.log("Search Term:", searchTerm);
+
+  try {
+    let searchResult = await Ad.find({
+      where: {
+        title: Like(`%${searchTerm}%`),
+      }
+    });
+    res.json(searchResult);
+
+  } catch (error) {
+    console.error("❌ Erreur lors de la récupération des annonces:", error);
+    res.status(500).json({ error: "Erreur de récupération des annonces" });
   }
 });
 
