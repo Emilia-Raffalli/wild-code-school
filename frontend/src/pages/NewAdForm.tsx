@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import "../styles/Form.css";
 import { Category } from "../types/Category";
+import { Tag } from '../types/Tag';
 
 type Inputs = {
     title: string;
@@ -13,10 +14,12 @@ type Inputs = {
     category: number;
     city: string;
     image: string;
+    tags: number[];
 };
 
 const NewAdForm = () => {
     const [categories, setCategories] = useState<Category[]>([]);
+    const [tags, setTags] = useState<Tag[]>([]);
 
     const { register, handleSubmit } = useForm<Inputs>();
 
@@ -30,8 +33,19 @@ const NewAdForm = () => {
         }
     };
 
+    const fetchTags = async () => {
+        try {
+            const result = await axios.get<Tag[]>('http://localhost:3000/tags');
+            console.log(result.data);
+            setTags(result.data);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des tags :", error);
+        }
+    }
+
     useEffect(() => {
         fetchCategories();
+        fetchTags();
     }, []);
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
@@ -42,11 +56,12 @@ const NewAdForm = () => {
             price: Number(data.price), 
             city: data.city,
             categoryId: Number(data.category), 
+            tags: data.tags.map((tagId) => ({ id: Number(tagId) }))
         };
 
         console.log("Données envoyées :", formData);
 
-        console.log(data);
+        // console.log(data);
 
         try {
             const response = await axios.post("http://localhost:3000/ads", formData);
@@ -63,7 +78,7 @@ const NewAdForm = () => {
                 <label>
                     Titre de l'annonce
                     <input
-                        {...register("title", { required: "Le titre est obligatoire" })}
+                        {...register("title")}
                         className="text-field"
                         defaultValue="Lot de tasses à café"
                     />
@@ -71,7 +86,7 @@ const NewAdForm = () => {
                 <br/>
                 <label>
                     Catégorie
-                    <select {...register("category", { required: "Veuillez choisir une catégorie" })} className="text-field">
+                    <select {...register("category")} className="text-field">
                         <option value="" >Sélectionnez une catégorie</option>
                         {categories.map((category) => (
                             <option value={category.id} key={category.id}>
@@ -84,19 +99,19 @@ const NewAdForm = () => {
                 <label>
                     Description
                     <textarea className="text-field"
-                        {...register("description", { required: "La description est obligatoire" })}
+                        {...register("description")}
                     />
                 </label>
                 <br/>
                 <label>
                     Votre prénom
-                    <input {...register("authorFirstname", { required: "Le prénom est obligatoire" })}
+                    <input {...register("authorFirstname")}
                     className="text-field" />
                 </label>
                 <br/>
                 <label>
                     Votre nom
-                    <input {...register("authorLastname", { required: "Le nom est obligatoire" })}
+                    <input {...register("authorLastname")}
                     className="text-field" />
                 </label>
                 <br/>
@@ -104,22 +119,33 @@ const NewAdForm = () => {
                     Prix
                     <input
                         type="number"
-                        {...register("price", { required: "Le prix est obligatoire", min: 1 })}
+                        {...register("price")}
                         className="text-field"
                     />
                 </label>
                 <br/>
                 <label>
                     Ville
-                    <input {...register("city", { required: "La ville est obligatoire" })}
+                    <input {...register("city")}
                     className="text-field" />
                 </label>
                 <br/>
                 <label>
                     Image de l'article à vendre
-                    <input {...register("image", { required: false })}
+                    <input {...register("image")}
                     className="text-field" />
                 </label>
+                {tags.map((tag) => (
+                    <label key={tag.id}>
+                        <input
+                            type="checkbox"
+                            value={tag.id}
+                            {...register("tags")}
+                        />
+                        {tag.tagName}
+                    </label>
+                ))}
+
                 <br/>
                 <button type="submit">Soumettre</button>
             </form>
