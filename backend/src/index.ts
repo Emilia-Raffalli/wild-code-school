@@ -15,11 +15,24 @@ app.use(express.json());
 
 //Request Handler
 //req : requete, res : response (le _req pour dire à typescript que l'on sait que l'on doit préciser le request)
-app.get("/ads", async (_req, res) => {
+app.get("/ads", async (req, res) => {
+
+  const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : null;
+  console.log(categoryId);
+
   try {
-      const allAds = await Ad.find();  
-      console.log(allAds);
-      res.json(allAds); 
+    let ads;
+
+    if (categoryId) {
+      ads = await Ad.find({
+        where: { category: { id: categoryId } },
+        relations: { category: true }, 
+      });
+    } else {
+      ads = await Ad.find();  
+    } 
+    res.json(ads);
+
   } catch (error) {
       console.error("❌ Erreur lors de la récupération des annonces:", error);
       res.status(500).json({ error: "Erreur de récupération des annonces" });
@@ -127,6 +140,20 @@ app.delete("/ads/:id", async (req, res) => {
 });
 
 
+app.delete("/categories/:id", async (req, res) => {
+  const id = Number.parseInt(req.params.id);
+  try {
+    await Category.delete({id: id});
+    res.send('Category has been deleted');
+  }
+  catch (err){
+    console.log("err", err);
+    res.status(500).send(err);
+  }
+
+});
+
+
 
 app.put("/ads/:id", async (req, res) => {
     const id = Number.parseInt(req.params.id);
@@ -141,6 +168,18 @@ app.put("/ads/:id", async (req, res) => {
 });
 
 
+
+app.put("/categories/:id", async (req, res) => {
+    const id = Number.parseInt(req.params.id);
+    try {
+    //fonction update native permettant de modifier partiellement l'entité en base. (par exemple dans ma route put, je ne lui passe qu'un titre à la modif.)
+    await Category.update({id:id}, req.body);
+    res.send("Category has been updated !");
+    } catch (error) {
+      console.log("error", error);
+      res.status(500).send(error);
+    }
+});
 
 
 

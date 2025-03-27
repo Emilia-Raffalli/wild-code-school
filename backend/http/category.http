@@ -25,15 +25,15 @@ Content-Type: application/json
 ]
 
 
-# ###
-# DELETE http://localhost:3000/categories/3
+###
+DELETE http://localhost:3000/categories/1
 
-# ###
-# PUT http://localhost:3000/categories/5
-# Content-Type: application/json
+###
+PUT http://localhost:3000/categories/8
+Content-Type: application/json
 
-# {
-#     "categoryName": "Jeux vidéos"
-# }
+{
+    "categoryName": "Jeux vidéos"
+}
 
 
