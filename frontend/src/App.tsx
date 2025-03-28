@@ -7,6 +7,7 @@ import AdDetailsPage from './pages/AdDetailsPage';
 import NewAdForm from './pages/NewAdForm';
 import AdminPage from './pages/AdminPage';
 import SearchPage from './pages/SearchPage';
+import EditAdForm from './pages/EditAdForm';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <Route path="ad/new" element = {<NewAdForm />} />
         <Route path='admin' element = {<AdminPage />} />
         <Route path='search/:searchTerm' element = {<SearchPage />} />
-
+        <Route path='ads/:id/edit' element = {<EditAdForm />} />
       </Route>
     </Routes>
   );

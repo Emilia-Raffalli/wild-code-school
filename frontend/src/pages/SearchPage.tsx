@@ -20,9 +20,11 @@ const SearchPage = () => {
         }
     }
 
+
     useEffect(() => {
         fetchSearchData();
     }, [searchTerm]);
+    
     return (
         <>
         <h2>Résultats de la recherche</h2>

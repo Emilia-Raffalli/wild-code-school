@@ -2,6 +2,10 @@ GET http://localhost:3000/ads
 
 ###
 
+GET http://localhost:3000/ads/10
+
+###
+
 GET http://localhost:3000/ads/search
 
 ###
@@ -26,11 +30,15 @@ Content-Type: application/json
 DELETE http://localhost:3000/ads/3
 
 ###
-PUT http://localhost:3000/ads/5
+PUT http://localhost:3000/ads/21
 Content-Type: application/json
 
 {
-    "title": "Titre de l'objet mis à jour"
+    "title": "Annonce 21 de l'objet mis à jour",
+    "tags": [
+        { "id": 1 },
+        { "id": 3 }
+    ]
 }
 
 

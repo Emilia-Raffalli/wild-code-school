@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Ad } from '../types/Ad';
@@ -92,6 +92,15 @@ const AdDetailsPage = () => {
                         > X Supprimer l'annonce
 
                     </button>
+
+                    <button 
+                        type='button'
+                    > Modifier l'annonce
+                    </button>
+
+                    <Link to={`/ads/${id}/edit`} className="button link-button">
+                        <span className="desktop-long-label">Modifier l'annonce</span>
+                    </Link>
                 </div>
             </section>
             </>

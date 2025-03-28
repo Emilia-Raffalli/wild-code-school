@@ -191,7 +191,21 @@ app.delete("/ads/:id", async (req, res) => {
       console.log("err", err);
       res.status(500).send(err);
     }
-  
+});
+
+
+app.get("/ads/:id", async (req, res) => {
+  const id = Number.parseInt(req.params.id);
+  try {
+    const ad = await Ad.findOneByOrFail({id: id});
+    
+    res.json(ad);   
+    console.log('Ad has been find !');
+  }
+  catch (err){
+    console.log("err", err);
+    res.status(500).send(err);
+  }
 });
 
 
@@ -205,18 +219,40 @@ app.delete("/categories/:id", async (req, res) => {
     console.log("err", err);
     res.status(500).send(err);
   }
-
 });
 
 
 
 app.put("/ads/:id", async (req, res) => {
     const id = Number.parseInt(req.params.id);
+    const ad = await Ad.findOneByOrFail({id: id});
+    
     try {
-    //fonction update native permettant de modifier partiellement l'entité en base. (par exemple dans ma route put, je ne lui passe qu'un titre à la modif.)
-    await Ad.update({id:id}, req.body);
-    res.send("Ad has been updated !");
+
+      const { 
+        title, 
+        description, 
+        author, 
+        price, 
+        image, 
+        city, 
+        categoryId, 
+        tags 
+      } = req.body;  
+          ad.title = title;
+          ad.description = description;
+          ad.author = author;
+          ad.price = price;  
+          ad.image = image; 
+          ad.city = city; 
+          ad.category = categoryId;
+          ad.tags = tags
+          // res.json(ad);
+      await ad.save();
+    res.json('annonce mise à jour avec succès !');
+
     } catch (error) {
+
       console.log("error", error);
       res.status(500).send(error);
     }
@@ -236,6 +272,19 @@ app.put("/categories/:id", async (req, res) => {
     }
 });
 
+
+
+app.put("/tags/:id", async (req, res) => {
+  const id = Number.parseInt(req.params.id);
+  try {
+  //fonction update native permettant de modifier partiellement l'entité en base. (par exemple dans ma route put, je ne lui passe qu'un titre à la modif.)
+  await Tag.update({id:id}, req.body);
+  res.send("Tag has been updated !");
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).send(error);
+  }
+});
 
 
 // app.delete("/ads/:id", (req, res) => {
