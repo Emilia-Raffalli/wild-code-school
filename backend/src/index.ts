@@ -6,6 +6,12 @@ import { Category } from './entities/Category';
 import { Tag } from './entities/Tag';
 import cors from "cors";
 import { Like } from 'typeorm';
+import { buildSchema } from 'type-graphql';
+import { AdResolver } from './resolvers/AdResolver';
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { TagResolver } from './resolvers/TagResolver';
+import { CategoryResolver } from './resolvers/CategoryResolver';
 
 
 const port =3000;
@@ -73,50 +79,50 @@ app.get("/ads/search", async (req, res) => {
 });
 
 
-app.get("/categories", async (_req, res) => {
-  try {
-      const categories = await Category.find();  
-      console.log(categories);  
-      res.json(categories);  
-  } catch (error) {
-      console.error("❌ Erreur lors de la récupération des categories:", error);
-      res.status(500).json({ error: "Erreur de récupération des categories" });
-  }
-});
+// app.get("/categories", async (_req, res) => {
+//   try {
+//       const categories = await Category.find();  
+//       console.log(categories);  
+//       res.json(categories);  
+//   } catch (error) {
+//       console.error("❌ Erreur lors de la récupération des categories:", error);
+//       res.status(500).json({ error: "Erreur de récupération des categories" });
+//   }
+// });
 
 
-app.get("/tags", async (req, res) => {
-  const tags = await Tag.find();
-  console.log(tags);
-  res.json(tags);
-})
+// app.get("/tags", async (req, res) => {
+//   const tags = await Tag.find();
+//   console.log(tags);
+//   res.json(tags);
+// })
 
 
-app.post("/ads", async (req, res) => {
-  const { title, description, author, price, createdAt, image, city, categoryId, tags } = req.body;  
+// app.post("/ads", async (req, res) => {
+//   const { title, description, author, price, createdAt, image, city, categoryId, tags } = req.body;  
    
-  try {
-      const ad = new Ad();
-      ad.title = title;
-      ad.description = description;
-      ad.author = author;
-      ad.price = price;  
-      ad.createdAt = createdAt;  
-      ad.image = image; 
-      ad.city = city; 
-      ad.category = categoryId;
-      ad.tags = tags
+//   try {
+//       const ad = new Ad();
+//       ad.title = title;
+//       ad.description = description;
+//       ad.author = author;
+//       ad.price = price;  
+//       ad.createdAt = createdAt;  
+//       ad.image = image; 
+//       ad.city = city; 
+//       ad.category = categoryId;
+//       ad.tags = tags
 
-      console.log(categoryId);
+//       console.log(categoryId);
 
-      await ad.save(); 
-      res.status(201).send('ad has been created !');
+//       await ad.save(); 
+//       res.status(201).send('ad has been created !');
 
-    } catch (error) {
-      console.error("❌ Erreur lors de la création de l'annonce:", error);
-      res.status(500).json({ error: "Erreur de création de l'annonce" });
-  }
-});
+//     } catch (error) {
+//       console.error("❌ Erreur lors de la création de l'annonce:", error);
+//       res.status(500).json({ error: "Erreur de création de l'annonce" });
+//   }
+// });
 
 
 
@@ -194,32 +200,32 @@ app.delete("/ads/:id", async (req, res) => {
 });
 
 
-app.get("/ads/:id", async (req, res) => {
-  const id = Number.parseInt(req.params.id);
-  try {
-    const ad = await Ad.findOneByOrFail({id: id});
+// app.get("/ads/:id", async (req, res) => {
+//   const id = Number.parseInt(req.params.id);
+//   try {
+//     const ad = await Ad.findOneByOrFail({id: id});
     
-    res.json(ad);   
-    console.log('Ad has been find !');
-  }
-  catch (err){
-    console.log("err", err);
-    res.status(500).send(err);
-  }
-});
+//     res.json(ad);   
+//     console.log('Ad has been find !');
+//   }
+//   catch (err){
+//     console.log("err", err);
+//     res.status(500).send(err);
+//   }
+// });
 
 
-app.delete("/categories/:id", async (req, res) => {
-  const id = Number.parseInt(req.params.id);
-  try {
-    await Category.delete({id: id});
-    res.send('Category has been deleted');
-  }
-  catch (err){
-    console.log("err", err);
-    res.status(500).send(err);
-  }
-});
+// app.delete("/categories/:id", async (req, res) => {
+//   const id = Number.parseInt(req.params.id);
+//   try {
+//     await Category.delete({id: id});
+//     res.send('Category has been deleted');
+//   }
+//   catch (err){
+//     console.log("err", err);
+//     res.status(500).send(err);
+//   }
+// });
 
 
 
@@ -228,7 +234,6 @@ app.put("/ads/:id", async (req, res) => {
     const ad = await Ad.findOneByOrFail({id: id});
     
     try {
-
       const { 
         title, 
         description, 
@@ -325,3 +330,20 @@ app.listen(port, async () => {
 });
 
 
+
+const start = async() => {
+  const schema = await buildSchema({
+    resolvers: [AdResolver, TagResolver, CategoryResolver]
+  });
+
+  const apolloServer = new ApolloServer({ schema:schema })
+
+  const { url } = await startStandaloneServer(apolloServer, {
+    listen: { port: 4200 },
+    });
+
+    console.log(`🚀  Server ready at: ${url}`);
+
+}
+
+start();
