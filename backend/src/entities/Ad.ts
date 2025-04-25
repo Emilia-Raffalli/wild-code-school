@@ -9,7 +9,7 @@ import {
 
 import { Category } from "./Category";
 import { Tag } from "./Tag";
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, Float, ID, ObjectType } from "type-graphql";
   
 @Entity()
 @ObjectType()
@@ -32,7 +32,7 @@ export class Ad extends BaseEntity {
     author: string;
 
     @Column()
-    @Field()
+    @Field(() =>Float)
     price: number;
 
     @Column({ default: "" })
