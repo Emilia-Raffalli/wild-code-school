@@ -1,25 +1,17 @@
-import axios from "axios"
 import NavTopLink from "./NavTopLink"
-import { useEffect, useState } from "react"
 import { Category } from "../types/Category";
+import { GET_CATEGORIES } from "../gql/category/getCategories";
+import { useQuery } from "@apollo/client";
 
 
 const NavTop = () => {
-
-    const [categories, setCategories] = useState<Category[]>([]);
-    const fetchData = async () => {
-        const result = await axios.get<Category[]>('http://localhost:3000/categories');
-        // console.log("Résultat du fetch des catégories :", result.data); 
-        setCategories(result.data);
-    }
-    useEffect(() => {
-        fetchData();
-    }, []); 
-
+    const { data, loading, error } = useQuery(GET_CATEGORIES);
+    if (loading) return <p>Chargement des catégories...</p>;
+    if (error) return <p>Erreur lors du chargement des catégories : {error.message}</p>;
     return (
         <>
         <nav className="categories-navigation">
-            {categories.map((category) => (
+            {data.getCategories.map((category:Category) => (
                 <NavTopLink 
                     key={category.id}  
                     link={`/?categoryId=${category.id}`}  
@@ -27,7 +19,6 @@ const NavTop = () => {
             ))}
         </nav>
         </>
-
     )
 }
 export default NavTop

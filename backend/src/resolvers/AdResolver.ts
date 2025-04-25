@@ -3,65 +3,35 @@ import { Arg, Field, ID, InputType, Mutation, Query, Resolver } from "type-graph
 import { Category } from "../entities/Category";
 import { Tag } from "../entities/Tag";
 import { In } from "typeorm";
-
-
-@InputType()
-export class AdInput {
-    @Field(()=>String)
-    title: string;
-
-    @Field(()=>String, { nullable:true })
-    description: string;
-
-    @Field(()=>String, { nullable:true })
-    author: string;
-
-    @Field({ nullable:true })
-    price: number;
-
-    @Field(()=>String, { nullable:true })
-    image?: string;
-
-    @Field(()=>String,{ nullable:true })
-    city: string;
-
-    @Field(() => ID, { nullable:true })
-    category: number;
-    
-    @Field(() => [ID],{ nullable:true })
-    tags: number[];
-}
-
-@InputType()
-export class AdFiltersInput {
-    @Field(()=>ID, { nullable:true })
-    categoryId?: number;
-}
+import AdInput, { AdFiltersInput } from "../inputs/AdInputs";
 
 
 @Resolver(Ad)
 export class AdResolver { //TODO : recherches par categories, recherche par id de l'annonce
     @Query(() => [Ad])
-    async getAds(@Arg("filters", () => AdFiltersInput) filters?: AdFiltersInput) {
-
+    async getAds(@Arg("filters", () => AdFiltersInput, { nullable: true }) filters?: AdFiltersInput) {
         const { categoryId } = filters || {};
-
-        let ads;
+    
+        let ads: Ad[] = [];  
         try {
-            if(categoryId) {
-                ads = await Ad.find({ where: {
-                    category: { id: categoryId }},
-                    relations: { category: true }, 
+            if (categoryId) {
+                ads = await Ad.find({
+                    where: {
+                        category: { id: categoryId }
+                    },
+                    relations: ["category", "tags"], 
                 });
-                return ads;
-            } 
-            ads = await Ad.find({
-                relations: ["tags"],
-            });  
-            return ads;
-      
+            } else {
+                ads = await Ad.find({
+                    relations: ["tags"], 
+                });
+            }
+    
+            return ads || [];
+    
         } catch (error) {
-            console.error("❌ Erreur lors de la récupération des annonces:", error);
+            // console.error("❌ Erreur lors de la récupération des annonces:", error);
+            return [];
         }
     }
     

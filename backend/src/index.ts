@@ -22,42 +22,42 @@ app.use(express.json());
 
 //Request Handler
 //req : requete, res : response (le _req pour dire à typescript que l'on sait que l'on doit préciser le request)
-app.get("/ads", async (req, res) => {
+// app.get("/ads", async (req, res) => {
 
-  const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : null;
-  console.log(categoryId);
+//   const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : null;
+//   console.log(categoryId);
 
-  const adId = req.query.adId?parseInt(req.query.adId as string) : null;
-  console.log(adId);
+//   const adId = req.query.adId?parseInt(req.query.adId as string) : null;
+//   console.log(adId);
 
-  try {
-    let ads;
+//   try {
+//     let ads;
 
-    if (categoryId) {
-      ads = await Ad.find({
-        where: { 
-          category: { id: categoryId 
-          } 
-        },
-        relations: { 
-          category: true 
-        }, 
-      });
-    } else if (adId) {
-      ads = await Ad.findOneBy({
-        id: adId,
-    })
+//     if (categoryId) {
+//       ads = await Ad.find({
+//         where: { 
+//           category: { id: categoryId 
+//           } 
+//         },
+//         relations: { 
+//           category: true 
+//         }, 
+//       });
+//     } else if (adId) {
+//       ads = await Ad.findOneBy({
+//         id: adId,
+//     })
 
-    } else {
-      ads = await Ad.find();  
-    } 
-    res.json(ads);
+//     } else {
+//       ads = await Ad.find();  
+//     } 
+//     res.json(ads);
 
-  } catch (error) {
-      console.error("❌ Erreur lors de la récupération des annonces:", error);
-      res.status(500).json({ error: "Erreur de récupération des annonces" });
-  }
-});
+//   } catch (error) {
+//       console.error("❌ Erreur lors de la récupération des annonces:", error);
+//       res.status(500).json({ error: "Erreur de récupération des annonces" });
+//   }
+// });
 
 
 app.get("/ads/search", async (req, res) => {

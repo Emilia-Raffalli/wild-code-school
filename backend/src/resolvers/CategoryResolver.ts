@@ -7,7 +7,7 @@ import { CategoryInput } from "../inputs/CategoryInput";
 @Resolver(Category)
 export class CategoryResolver {
     @Query(() => [Category])
-    async getCatgories() {
+    async getCategories() {
         let categories = await Category.find();
         return categories;
     }
