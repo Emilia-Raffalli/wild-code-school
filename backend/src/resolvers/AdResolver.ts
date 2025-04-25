@@ -32,61 +32,51 @@ export class AdInput {
     tags: number[];
 }
 
+@InputType()
+export class AdFiltersInput {
+    @Field(()=>ID, { nullable:true })
+    categoryId?: number;
+}
+
 
 @Resolver(Ad)
 export class AdResolver { //TODO : recherches par categories, recherche par id de l'annonce
     @Query(() => [Ad])
-    async getAds() {
+    async getAds(@Arg("filters", () => AdFiltersInput) filters?: AdFiltersInput) {
 
-        // const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : null;
-        // console.log(categoryId);
-      
-        // const adId = req.query.adId?parseInt(req.query.adId as string) : null;
-        // console.log(adId);
-      
-        // try {
-        //   let ads;
-      
-        //   if (categoryId) {
-        //     ads = await Ad.find({
-        //       where: { 
-        //         category: { id: categoryId 
-        //         } 
-        //       },
-        //       relations: { 
-        //         category: true 
-        //       }, 
-        //     });
-        //   } else if (adId) {
-        //     ads = await Ad.findOneBy({
-        //       id: adId,
-        //   })
-      
-        //   } else {
-            let ads = await Ad.find({
+        const { categoryId } = filters || {};
+
+        let ads;
+        try {
+            if(categoryId) {
+                ads = await Ad.find({ where: {
+                    category: { id: categoryId }},
+                    relations: { category: true }, 
+                });
+                return ads;
+            } 
+            ads = await Ad.find({
                 relations: ["tags"],
             });  
-    //       } 
-          return ads;
+            return ads;
       
-    //     } catch (error) {
-    //         console.error("❌ Erreur lors de la récupération des annonces:", error);
-    //         res.status(500).json({ error: "Erreur de récupération des annonces" });
-    //     }
-    //   }
+        } catch (error) {
+            console.error("❌ Erreur lors de la récupération des annonces:", error);
+        }
     }
+    
     @Query(() => Ad)
     async getAdById(@Arg("id") adId: number) {
         return await Ad.findOneByOrFail({id:adId});
     }
 
-
-
-
     @Mutation(() => Ad)
     async deleteAd(@Arg('id') adId: number) {
         try {
             const ad = await Ad.findOneByOrFail({id:adId});
+            if (!ad) {
+                throw new Error(`Le tag avec l'ID ${adId} n'existe pas.`);
+            }
             await Ad.delete({ id: adId });
             console.log('Ad has been deleted');
             return ad; 
@@ -123,7 +113,7 @@ export class AdResolver { //TODO : recherches par categories, recherche par id d
     @Mutation(()=> Boolean)
     async updateAd (
         @Arg("id") adId: number, 
-        @Arg("data") data:AdInput):Promise<Boolean> {
+        @Arg("data",() => AdInput) data:Partial<AdInput>):Promise<Boolean> {
       
         let ad =  await Ad.findOneByOrFail({id: adId});
     
@@ -133,7 +123,7 @@ export class AdResolver { //TODO : recherches par categories, recherche par id d
             return true;
         } catch (error) {
         console.log("error", error);
-        throw new Error("Impossible de mettre à jour l'annonce");
+            throw new Error("Impossible de mettre à jour l'annonce");
         }
      }
 

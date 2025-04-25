@@ -1,7 +1,8 @@
 import { Category } from "../entities/Category";
 import { Ad } from "../entities/Ad";
-import { Arg, Query, Resolver, Mutation } from "type-graphql";
+import { Arg, Query, Resolver, Mutation, Args } from "type-graphql";
 import { Field, ID, ObjectType } from "type-graphql";
+import { CategoryInput } from "../inputs/CategoryInput";
 
 @Resolver(Category)
 export class CategoryResolver {
@@ -15,7 +16,17 @@ export class CategoryResolver {
         return await Category.findOneByOrFail({id: categoryId});
     }
 
-//*********** Mutations ***********/ 
+    @Mutation(() => Category)
+    async createCategory(@Arg('data') data:CategoryInput) {
+      
+      try {
+        const category = Category.create( {...data});
+        await category.save();
+        return category;
+      } catch (error) {
+        console.error("❌ Erreur lors de la création de la catégorie:", error);        
+      }
+    }
 
     @Mutation(() => Category)
     async deleteCategory(@Arg('id') categoryId: number) {
@@ -49,8 +60,6 @@ export class CategoryResolver {
         if (!category) {
           throw new Error("La catégorie n'a pas été trouvée");
         } else {
-
-          
           await Category.delete({ id: categoryId });
           console.log('Category has been deleted');
           return category; 
