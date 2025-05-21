@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend 
+    ports:
+    - "3000:3000"  # Express REST API
+    - "4200:4200"  # Apollo Server GraphQL
+    volumes:
+      - ./data:/app/data
