@@ -43,7 +43,8 @@ export class Ad extends BaseEntity {
     @Field(()=>String)
     city: string;
 
-    @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
+    // @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
     @Field()
     createdAt: Date;
 

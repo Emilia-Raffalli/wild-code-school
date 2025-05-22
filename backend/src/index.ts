@@ -318,32 +318,44 @@ app.put("/tags/:id", async (req, res) => {
 // });
 
 
-app.listen(port, async () => { 
-  console.log(`Example app listening on port ${port}`);
+// app.listen(port, async () => { 
+//   console.log(`Example app listening on port ${port}`);
 
-  try {
-    await dataSource.initialize();
-    console.log("Database connected successfully!");
-} catch (error) {
-    console.error("Database connection failed:", error);
-}
-});
+//   try {
+//     await dataSource.initialize();
+//     console.log("Database connected successfully!");
+// } catch (error) {
+//     console.error("Database connection failed:", error);
+// }
+// });
 
 
 
 const start = async() => {
+
+  try {
+  // 1- Connexion à la base PostgreSQL
+  await dataSource.initialize();
+  console.log("✅ Database connected");
+
+  // 2- Création du schéma GraphQL
   const schema = await buildSchema({
     resolvers: [AdResolver, TagResolver, CategoryResolver]
   });
 
+  // 3- Création et démarrage du serveur Apollo
   const apolloServer = new ApolloServer({ schema:schema })
 
   const { url } = await startStandaloneServer(apolloServer, {
     listen: { port: 4200 },
     });
 
-    console.log(`🚀  Server ready at: ${url}`);
+    // console.log(`🚀  Server ready at: ${url}`);
+    console.log(`🚀 GraphQL server ready at ${url}`);
 
+  } catch (err) {
+    console.error("❌ Failed to start server:", err);
+  }
 }
 
 start();

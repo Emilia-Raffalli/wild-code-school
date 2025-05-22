@@ -13,6 +13,8 @@ RUN npm install
 # Étape 5 : Copier les fichiers de configuration
 COPY src src
 
+# RUN npx tsc
+
 
 # Étape 6 : Définir les variables d'environnement (si tu en as)
 # ENV NODE_ENV=production

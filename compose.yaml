@@ -1,7 +1,7 @@
 services:
   frontend:
     build: ./frontend
-    ports:
+    ports: # host:container
       - "5173:5173"
     depends_on:
       - backend
@@ -10,9 +10,43 @@ services:
 
   backend:
     build: ./backend 
-    ports:
-    # - "3000:3000"  # Express REST API
-    - "4200:4200"  # Apollo Server GraphQL
+    ports: # host:container
+      - "3000:3000"  # Express REST API
+      - "4200:4200"  # Apollo Server GraphQL
+    depends_on:
+      - database
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
     volumes:
-      - ./backend/data:/app/data
+      # - ./backend/data:/app/data
       - ./backend/src/:/app/src # synchroniser dossier backend/src avec app/src (défini dans Dockerfile du backend)
+  
+  database: 
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"  
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER} 
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${DB_DATABASE} -U ${DB_USER}"]
+    volumes:
+      - ./backend/postgres-data:/var/lib/postgresql/data
+
+  pgadmin:
+      image: dpage/pgadmin4
+      container_name: pgadmin
+      restart: always
+      ports:
+        - "5050:80" 
+      environment:
+        PGADMIN_DEFAULT_EMAIL: emilia@admin.com
+        PGADMIN_DEFAULT_PASSWORD: admin
+      depends_on:
+        - database
