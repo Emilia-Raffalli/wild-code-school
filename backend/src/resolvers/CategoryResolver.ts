@@ -53,21 +53,25 @@ export class CategoryResolver {
     }
 
     @Mutation(() => Category)
-    async updateCategory(@Arg('id') categoryId: number) {
+    async updateCategory(@Arg('id') categoryId: number,
+    @Arg("data", () => CategoryInput) data: CategoryInput)
+    {
       try {
         let category = await Category.findOneByOrFail({id:categoryId});
 
         if (!category) {
           throw new Error("La catégorie n'a pas été trouvée");
         } else {
-          await Category.delete({ id: categoryId });
-          console.log('Category has been deleted');
-          return category; 
+          Object.assign(category, data);
+          await category.save();
+          return category;
         }
       }
       catch (err){
-        console.error("❌ Erreur lors de la suppression de l'annonce:", err);
+        console.error("❌ Erreur lors de la modification de l'annonce:", err);
         throw new Error("Impossible de supprimer la catégorie");
       }
     }
+
+   
 }

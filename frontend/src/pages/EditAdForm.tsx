@@ -21,40 +21,40 @@ type Inputs = {
 };
 
 const EditAdForm = () => {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [tags, setTags] = useState<Tag[]>([]);
-    const[ad, setAd] = useState<Ad>();
+    // const [categories, setCategories] = useState<Category[]>([]);
+    // const [tags, setTags] = useState<Tag[]>([]);
+    // const[ad, setAd] = useState<Ad>();
 
-    const { id } = useParams();
+    // const { id } = useParams();
 
-    const { register, handleSubmit, reset } = useForm<Inputs>();
+    // const { register, handleSubmit, reset } = useForm<Inputs>();
 
     // Fonction pour récupérer les catégories depuis l'API
-    const fetchCategories = async () => {
-        try {
-            const result = await axios.get<Category[]>("http://localhost:3000/categories");
-            setCategories(result.data);
-        } catch (error) {
-            console.error("Erreur lors de la récupération des catégories :", error);
-        }
-    };
+    // const fetchCategories = async () => {
+    //     try {
+    //         const result = await axios.get<Category[]>("http://localhost:3000/categories");
+    //         setCategories(result.data);
+    //     } catch (error) {
+    //         console.error("Erreur lors de la récupération des catégories :", error);
+    //     }
+    // };
 
-    const fetchTags = async () => {
-        try {
-            const result = await axios.get<Tag[]>('http://localhost:3000/tags');
-            // console.log(result.data);
-            setTags(result.data);
-        } catch (error) {
-            console.error("Erreur lors de la récupération des tags :", error);
-        }
-    }
+    // const fetchTags = async () => {
+    //     try {
+    //         const result = await axios.get<Tag[]>('http://localhost:3000/tags');
+    //         // console.log(result.data);
+    //         setTags(result.data);
+    //     } catch (error) {
+    //         console.error("Erreur lors de la récupération des tags :", error);
+    //     }
+    // }
 
-    const fetchAdById = async () => {
+    // const fetchAdById = async () => {
 
-        let url = `http://localhost:3000/ads/${id}`
-        const ad = await axios.get(url);
-        // console.log(ad.data);
-        setAd(ad.data);
+    //     let url = `http://localhost:3000/ads/${id}`
+    //     const ad = await axios.get(url);
+    //     // console.log(ad.data);
+    //     setAd(ad.data);
 
         // defauly values to insert with 'reset' method of useForm
         // reset({
@@ -70,56 +70,62 @@ const EditAdForm = () => {
         // });
     }
 
-    useEffect(() => {
-        fetchCategories();
-        fetchTags();
+    // useEffect(() => {
+    //     fetchCategories();
+    //     fetchTags();
 
-        if (id) {
-            fetchAdById();
-        }
-    }, [id]);
+    //     if (id) {
+    //         fetchAdById();
+    //     }
+    // }, [id]);
 
-    const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        const formData = {
-            title: data.title,
-            description: data.description,
-            author: `${data.authorFirstname} ${data.authorLastname}`,
-            price: Number(data.price), 
-            city: data.city,
-            image: data.image,
-            categoryId: Number(data.category), 
-            tags: data.tags.map((tagId) => ({ id: Number(tagId) }))
-        };
+    // const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    //     const formData = {
+    //         title: data.title,
+    //         description: data.description,
+    //         author: `${data.authorFirstname} ${data.authorLastname}`,
+    //         price: Number(data.price), 
+    //         city: data.city,
+    //         image: data.image,
+    //         categoryId: Number(data.category), 
+    //         tags: data.tags.map((tagId) => ({ id: Number(tagId) }))
+    //     };
 
 
-        try {
+        // try {
 
-            if (ad) {
-                const response = await axios.put(`http://localhost:3000/ads/${id}`, formData);
-                console.log("Annonce mise à jour avec succès :", response.data);
-                toast.success("Annonce mise à jour avec succès !");
-                // console.log(response.data);
-            } else {
-                const response = await axios.post("http://localhost:3000/ads", formData);
-                console.log("Annonce soumise avec succès :", response.data);
-                toast.success("Annonce créée avec succès !");
-            }
+        //     if (ad) {
+        //         const response = await axios.put(`http://localhost:3000/ads/${id}`, formData);
+        //         console.log("Annonce mise à jour avec succès :", response.data);
+        //         toast.success("Annonce mise à jour avec succès !");
+        //         // console.log(response.data);
+        //     } else {
+        //         const response = await axios.post("http://localhost:3000/ads", formData);
+        //         console.log("Annonce soumise avec succès :", response.data);
+        //         toast.success("Annonce créée avec succès !");
+        //     }
 
-        } catch (error) {
-            console.error("Erreur lors de la soumission du formulaire :", error);
-            toast.error('Erreur lors de la soumission du formulaire');
-        }
-    };
+        // } catch (error) {
+        //     console.error("Erreur lors de la soumission du formulaire :", error);
+        //     toast.error('Erreur lors de la soumission du formulaire');
+        // }
+    // };
 
-    if (ad === undefined) {
-        return <p>Loading</p>;
-    }
+    // if (ad === undefined) {
+    //     return <p>Loading</p>;
+    // }
 
-    console.log(ad.tags)
+    // console.log(ad.tags)
 
-    return (
+
+
+
+
+
+
+    // return (
         <>
-            <form id='newAdForm' onSubmit={handleSubmit(onSubmit)}>
+            {/* <form id='newAdForm' onSubmit={handleSubmit(onSubmit)}>
                 <label>
                     Titre de l'annonce
                     <input
@@ -205,9 +211,9 @@ const EditAdForm = () => {
 
                 <br/>
                 <button type="submit">Soumettre</button>
-            </form>
+            </form> */}
         </>
-    );
-};
+    // );
+
 
 export default EditAdForm;

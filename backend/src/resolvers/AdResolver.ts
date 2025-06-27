@@ -80,21 +80,32 @@ export class AdResolver { //TODO : recherches par categories, recherche par id d
         }
     }
 
-    @Mutation(()=> Ad)
-    async updateAd (
-        @Arg("id") adId: number, 
-        @Arg("data",() => AdInput) data:Partial<AdInput>):Promise<Ad> {
+    // @Mutation(()=> Ad)
+    // async updateAd (
+    //     @Arg("id") adId: number, 
+    //     @Arg("data",() => AdInput) data:Partial<AdInput>):Promise<Ad> {
       
-        let ad =  await Ad.findOneByOrFail({id: adId});
+    //     let ad =  await Ad.findOneByOrFail({id: adId});
     
-        try {
-            Object.assign(ad, data);
-            await ad.save();
-            return ad;
-        } catch (error) {
-        console.log("error", error);
-            throw new Error("Impossible de mettre à jour l'annonce");
-        }
-     }
+    //     try {
+    //         Object.assign(ad, data);
+    //         await ad.save();
+    //         return ad;
+    //     } catch (error) {
+    //     console.log("error", error);
+    //         throw new Error("Impossible de mettre à jour l'annonce");
+    //     }
+    //  }
+
+    @Mutation(() => Ad)
+    async updateAd(
+        @Arg("id") adId: number, 
+        @Arg("data", () => AdInput) data: Partial<AdInput>
+        ): Promise<Ad> {
+        const ad = await Ad.findOneByOrFail({ id: adId });
+        Object.assign(ad, data);
+        await ad.save();
+        return ad;
+    }
 
 }
