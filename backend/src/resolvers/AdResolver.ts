@@ -80,17 +80,17 @@ export class AdResolver { //TODO : recherches par categories, recherche par id d
         }
     }
 
-    @Mutation(()=> Boolean)
+    @Mutation(()=> Ad)
     async updateAd (
         @Arg("id") adId: number, 
-        @Arg("data",() => AdInput) data:Partial<AdInput>):Promise<Boolean> {
+        @Arg("data",() => AdInput) data:Partial<AdInput>):Promise<Ad> {
       
         let ad =  await Ad.findOneByOrFail({id: adId});
     
         try {
             Object.assign(ad, data);
             await ad.save();
-            return true;
+            return ad;
         } catch (error) {
         console.log("error", error);
             throw new Error("Impossible de mettre à jour l'annonce");

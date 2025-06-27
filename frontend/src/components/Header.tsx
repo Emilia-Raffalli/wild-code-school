@@ -1,5 +1,5 @@
 import NavTop from "./NavTop"
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const Header = ({ }) => {
 
@@ -16,24 +16,17 @@ const Header = ({ }) => {
     if (searchTerm.trim() !== "") 
       {
       navigate(`/search/${encodeURIComponent(searchTerm)}`);
-    }
-    
+    } 
   }
-  // const handleSearch = (e:React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.target.value.toLowerCase();
-  //   setSearchTerm(value);
-  //   // onSearch(value); 
-  //   console.log(searchTerm);
-  // };
-
+  
     return (
         <header className="header">
         <div className="main-menu">
           <h1>
-            <a href="/" className="button logo link-button">
+            <Link to= "/" className="button logo link-button">
               <span className="mobile-short-label">TGC</span>
               <span className="desktop-long-label">THE GOOD CORNER</span>
-            </a>
+            </Link>
           </h1>
           <form className="text-field-with-button" onSubmit={onSubmit}>
 
@@ -42,8 +35,6 @@ const Header = ({ }) => {
               type="search" 
               placeholder="Type to search"
               name='searchTerm'
-              // value={searchTerm}
-              // onChange={handleSearch}
               />
             
             
@@ -63,10 +54,10 @@ const Header = ({ }) => {
               </svg>
             </button>
           </form>
-          <a href="ad/new" className="button link-button">
+          <Link to = "ad/new" className="button link-button">
             <span className="mobile-short-label">Publier</span>
             <span className="desktop-long-label">Publier une annonce</span>
-          </a>
+          </Link>
         </div>
         <NavTop />
 
